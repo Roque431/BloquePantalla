@@ -46,7 +46,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen>
-    with SingleTickerProviderStateMixin, SecureScreenMixin {
+    with SingleTickerProviderStateMixin {
   // ── Controladores y estado del formulario ──
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -86,15 +86,14 @@ class _LoginScreenState extends State<LoginScreen>
     _animCtrl.forward();
   }
 
-  // ── Activar FLAG_SECURE (Android) / overlay protection (iOS) ──
+  // ── Dispose ──
   @override
   void dispose() {
-    // FLAG_SECURE se maneja en MainActivity.kt, no aquí
     _animCtrl.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-}
+  }
 
   // ── Validaciones ──
   String? _validateEmail(String? value) {

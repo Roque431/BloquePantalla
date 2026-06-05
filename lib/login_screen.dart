@@ -14,26 +14,7 @@ import 'package:flutter_application_1/secure_mixin.dart';
 //  PUNTO DE ENTRADA
 // ──────────────────────────────────────────────────────────
 
-class SecureApp extends StatelessWidget {
-  const SecureApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Acceso Seguro',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF0A1628),
-          brightness: Brightness.dark,
-        ),
-        fontFamily: 'SF Pro Display', // Fallback al sistema
-      ),
-      home: const LoginScreen(),
-    );
-  }
-}
+// SecureApp se ha movido a main.dart como SecureAppWrapper para manejar el detector de inactividad global.
 
 // ──────────────────────────────────────────────────────────
 //  PANTALLA DE LOGIN
@@ -134,15 +115,10 @@ class _LoginScreenState extends State<LoginScreen>
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    // Navegar a la pantalla principal o mostrar error
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('¡Acceso concedido!'),
-        backgroundColor: _accent.withOpacity(0.9),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
+    // Navegar a la pantalla principal
+    if (mounted) {
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
   }
 
   // ──────────────────────────────────────────────────────

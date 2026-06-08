@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'login_screen.dart';
 import 'home_screen.dart';
 import 'inactivity_detector.dart';
+import 'fcm_service.dart';
+import 'secure_storage_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicializar Firebase (requiere google-services.json en Android)
+  try {
+    await Firebase.initializeApp();
+    await FCMService.initialize();
+  } catch (e) {
+    debugPrint('Firebase no inicializado: $e (Asegúrate de agregar google-services.json)');
+  }
+
+  // Inicializar datos sensibles de prueba
+  await SecureStorageService.initializeDefaultData();
+
   runApp(const SecureAppWrapper());
 }
 

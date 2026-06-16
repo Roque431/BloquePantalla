@@ -2,38 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'login_screen.dart';
 import 'home_screen.dart';
+import 'security_block_screen.dart';
 import 'inactivity_detector.dart';
 import 'fcm_service.dart';
 import 'secure_storage_service.dart';
+import 'integrity_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Inicializar Firebase (requiere google-services.json en Android)
+  // 1. Verificar integridad del dispositivo (Fake GPS, Root, etc.)
+  String? securityThreat = await IntegrityService.checkDeviceIntegrity();
+
+  // 2. Inicializar Firebase (requiere google-services.json en Android)
   try {
     await Firebase.initializeApp();
     await FCMService.initialize();
   } catch (e) {
-    debugPrint('Firebase no inicializado: $e (Asegúrate de agregar google-services.json)');
+    debugPrint('Firebase no inicializado: $e');
   }
 
-  // Inicializar datos sensibles de prueba
-  await SecureStorageService.initializeDefaultData();
+  // 3. Inicializar datos sensibles de prueba
+  try {
+    await SecureStorageService.initializeDefaultData();
+  } catch (e) {
+    debugPrint('Error inicializando almacenamiento seguro: $e');
+  }
 
-  runApp(const SecureAppWrapper());
+  runApp(SecureAppWrapper(securityThreat: securityThreat));
 }
 
 class SecureAppWrapper extends StatelessWidget {
-  const SecureAppWrapper({super.key});
+  final String? securityThreat;
+  const SecureAppWrapper({super.key, this.securityThreat});
 
   @override
   Widget build(BuildContext context) {
     final navigatorKey = GlobalKey<NavigatorState>();
 
     return InactivityDetector(
-      timeout: const Duration(seconds: 30), // 30 segundos para pruebas, ajustar según necesidad
+      timeout: const Duration(seconds: 30),
       onTimeout: () {
-        debugPrint('[Inactivity] Tiempo de inactividad alcanzado. Bloqueando...');
         navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (route) => false);
       },
       child: MaterialApp(
@@ -47,12 +56,15 @@ class SecureAppWrapper extends StatelessWidget {
             brightness: Brightness.dark,
           ),
         ),
-        initialRoute: '/',
+        // Si hay una amenaza de seguridad, mostramos la pantalla de bloqueo
+        home: securityThreat != null 
+            ? SecurityBlockScreen(reason: securityThreat!) 
+            : const LoginScreen(),
         routes: {
-          '/': (context) => const LoginScreen(),
           '/home': (context) => const HomeScreen(),
         },
       ),
     );
   }
 }
+

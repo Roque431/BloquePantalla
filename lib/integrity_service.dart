@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:safe_device/safe_device.dart';
 import 'package:trust_location/trust_location.dart';

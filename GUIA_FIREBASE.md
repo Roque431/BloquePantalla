@@ -9,7 +9,7 @@ Para que la función de borrado remoto funcione en tu celular, debes completar e
 
 ## 2. Registrar la Aplicación Android
 1. Haz clic en el icono de Android.
-2. **IMPORTANTE**: En "Nombre del paquete de Android", ingresa exactamente: `com.roque.bloquepantalla`.
+2. **IMPORTANTE**: En "Nombre del paquete de Android", ingresa exactamente: `com.example.flutter_application_1`.
 3. Descarga el archivo `google-services.json`.
 4. Coloca ese archivo en la carpeta de tu proyecto: `android/app/google-services.json`.
 

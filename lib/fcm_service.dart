@@ -41,6 +41,8 @@ class FCMService {
 // Función global obligatoria para segundo plano
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Asegurar que Firebase esté inicializado en el proceso de segundo plano
+  await Firebase.initializeApp();
   debugPrint('[FCM-BG] Mensaje en segundo plano: ${message.data}');
   if (message.data['action'] == 'wipe_data') {
     await SecureStorageService.wipeAllData();
